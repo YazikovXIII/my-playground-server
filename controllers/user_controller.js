@@ -1,4 +1,3 @@
-const user_service = require("../service/user_service");
 const UserService = require("../service/user_service");
 const { CLIENT_URL } = process.env;
 

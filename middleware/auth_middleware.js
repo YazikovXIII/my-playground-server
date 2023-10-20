@@ -5,8 +5,7 @@ module.exports = function (req, res, next) {
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
-      throw CustomError(401, "User unauthorized");
-      return next();
+      return next(CustomError(401, "User unauthorized"));
     }
     const accessToken = authHeader.split(" ")[1];
     const userData = TokenService.validateAccessToken(accessToken);
