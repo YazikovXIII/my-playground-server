@@ -1,0 +1,5 @@
+services:
+  - type: web
+    build:
+      env:
+        NODE_VERSION: 16.20.1
