@@ -8,10 +8,18 @@ const UserDto = require("../dtos/user_dto");
 const { API_URL } = process.env;
 
 class UserService {
-  async registration(email, password) {
-    const candidate = await UserModel.findOne({ email });
+  async registration(name, username, email, password) {
+    const candidate = await UserModel.findOne({
+      $or: [{ email }, { username }],
+    });
+
     if (candidate) {
-      throw CustomError(409, `This email (${email}) is already in use`);
+      if (candidate.email === email) {
+        throw CustomError(409, `This email (${email}) is already in use`);
+      }
+      if (candidate.username === username) {
+        throw CustomError(409, `This username (${username}) is already in use`);
+      }
     }
 
     const hashedPassword = await bcrypt.hash(password, 3);
@@ -19,16 +27,18 @@ class UserService {
 
     const user = await UserModel.create({
       email,
+      name,
+      username,
       password: hashedPassword,
       activationLink,
     });
     await MailService.sendActivationMail(email, `${API_URL}/user/activation/${activationLink}`);
     const userDto = new UserDto(user);
-    const tokens = TokenService.generateTokens({ ...userDto });
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
+    const token = TokenService.generateTokens({ ...userDto });
+    await TokenService.saveToken(userDto.id, token);
 
     return {
-      ...tokens,
+      accesstoken: token,
       user: userDto,
     };
   }
@@ -42,7 +52,6 @@ class UserService {
       throw CustomError(500, "Email is already verified");
     }
     isUser.isActivated = true;
-    isUser.activationLink = "";
     await isUser.save();
   }
 
@@ -63,44 +72,31 @@ class UserService {
     }
 
     const userDto = new UserDto(isUser);
-    const tokens = TokenService.generateTokens({ ...userDto });
+    const token = TokenService.generateTokens({ ...userDto });
+    await TokenService.saveToken(userDto.id, token);
 
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
     return {
-      ...tokens,
+      accesstoken: token,
       user: userDto,
     };
   }
 
-  async logout(refreshToken) {
-    const token = await TokenService.removeToken(refreshToken);
-    return token;
-  }
-
-  async refresh(refreshToken) {
-    if (!refreshToken) {
-      throw CustomError(401, "user unauthorized");
-    }
-    const userData = TokenService.validateRefreshToken(refreshToken);
-    const isTokenInDb = TokenService.findToken(refreshToken);
-    if (!userData || !isTokenInDb) {
-      throw CustomError(401, "user unauthorized");
-    }
-    const user = await UserModel.findById(userData.id);
-    const userDto = new UserDto(user);
-    const tokens = TokenService.generateTokens({ ...userDto });
-    await TokenService.saveToken(userDto.id, tokens.refreshToken);
-
-    return {
-      ...tokens,
-      user: userDto,
-    };
+  async logout(accessToken) {
+    const data = await TokenService.removeToken(accessToken);
+    return data;
   }
 
   async getUsers() {
     const userData = await UserModel.find();
     const usersDto = userData.map((user) => new UserDto(user));
     return usersDto;
+  }
+
+  async getCurrent(accessToken) {
+    const tokenData = await TokenService.findToken(accessToken);
+    const userData = await UserModel.findById(tokenData.user);
+    const userDto = new UserDto(userData);
+    return userDto;
   }
 }
 

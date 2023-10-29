@@ -8,10 +8,8 @@ class TokenService {
     const accessToken = jwt.sign(payload, JWT_ACCES_SECRET_KEY, {
       expiresIn: "30m",
     });
-    const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET_KEY, {
-      expiresIn: "7d",
-    });
-    return { accessToken, refreshToken };
+
+    return accessToken;
   }
 
   validateAccessToken(token) {
@@ -23,30 +21,23 @@ class TokenService {
     }
   }
 
-  validateRefreshToken(token) {
-    try {
-      const userData = jwt.verify(token, JWT_REFRESH_SECRET_KEY);
-      return userData;
-    } catch (error) {}
-  }
-
-  async findToken(refreshToken) {
-    const tokenData = await TokenModel.findOne({ refreshToken });
+  async findToken(accessToken) {
+    const tokenData = await TokenModel.findOne({ accessToken });
     return tokenData;
   }
 
   //тут робимо функцію з перезаписом токену,якщо він існую,тобто юзер вже є,або зі збереженням нового токену якщо юзер зайшов вперше
-  async saveToken(userId, refreshToken) {
+  async saveToken(userId, accessToken) {
     const tokenData = await TokenModel.findOne({ user: userId });
     if (tokenData) {
-      tokenData.refreshToken = refreshToken;
+      tokenData.accessToken = accessToken;
       return tokenData.save();
     }
-    return await TokenModel.create({ user: userId, refreshToken });
+    return await TokenModel.create({ user: userId, accessToken });
   }
 
-  async removeToken(refreshToken) {
-    const tokenData = await TokenModel.deleteOne({ refreshToken });
+  async removeToken(accessToken) {
+    const tokenData = await TokenModel.deleteOne({ accessToken });
     return tokenData;
   }
 }
