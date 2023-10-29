@@ -6,7 +6,7 @@ class TokenService {
   // робимо функцію з генераціі двох токенів(acces та refresh)
   generateTokens(payload) {
     const accessToken = jwt.sign(payload, JWT_ACCES_SECRET_KEY, {
-      expiresIn: "2m",
+      expiresIn: "24h",
     });
 
     return accessToken;
