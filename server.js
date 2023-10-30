@@ -20,9 +20,8 @@ const corsOptions = {
   credentials: true,
 };
 
-app.use(express.json());
-app.use(cookieParser());
 app.use(cors(corsOptions));
+app.use(express.json());
 app.use("/user", userRouter);
 app.use((err, req, res, next) => {
   const { status = 500, message = "server error" } = err;
