@@ -5,6 +5,12 @@ class UserSchemas {
     email: joi.string().email().required().messages({
       "any.required": "Missing required email field",
     }),
+    name: joi.string().messages({
+      "any.required": "Missing required name field",
+    }),
+    username: joi.string().messages({
+      "any.required": "Missing required username field",
+    }),
     password: joi.string().min(4).max(20).required().messages({
       "string.min": "Password should be at least 4 characters long",
       "string.max": "Password should be no more than 20 characters long",

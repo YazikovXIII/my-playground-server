@@ -4,9 +4,8 @@ const { CLIENT_URL } = process.env;
 class UserController {
   async registration(req, res, next) {
     try {
-      const { email, password } = req.body;
-      const userData = await UserService.registration(email, password);
-      res.cookie("refreshToken", userData.refreshToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+      const { name, username, email, password } = req.body;
+      const userData = await UserService.registration(name, username, email, password);
       return res.json(userData);
     } catch (error) {
       return res.status(error.status).json({
@@ -31,7 +30,6 @@ class UserController {
     try {
       const { email, password } = req.body;
       const userData = await UserService.login(email, password);
-      res.cookie("refreshToken", userData.refreshToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
       return res.json(userData);
     } catch (error) {
       return res.status(error.status).json({
@@ -42,10 +40,10 @@ class UserController {
 
   async logout(req, res, next) {
     try {
-      const { refreshToken } = req.cookies;
-      const token = await UserService.logout(refreshToken);
-      res.clearCookie("refreshToken");
-      return res.status(200).json({ token });
+      const accessToken = req.headers.authorization;
+      console.log("access", accessToken);
+      await UserService.logout(accessToken);
+      return res.status(200).json({ message: "Logged Out" });
     } catch (error) {
       return res.status(error.status).json({
         message: error.message,
@@ -55,20 +53,8 @@ class UserController {
 
   async getCurrent(req, res, next) {
     try {
-      const { refreshToken } = req.cookies;
-      const userData = await UserService.getCurrent(refreshToken);
-    } catch (error) {
-      return res.status(error.status).json({
-        message: error.message,
-      });
-    }
-  }
-
-  async refresh(req, res, next) {
-    try {
-      const { refreshToken } = req.cookies;
-      const userData = await UserService.refresh(refreshToken);
-      res.cookie("refreshToken", userData.refreshToken, { maxAge: 7 * 24 * 60 * 60 * 1000, httpOnly: true });
+      const accessToken = req.headers.authorization.split(" ")[1];
+      const userData = await UserService.getCurrent(accessToken);
       return res.json(userData);
     } catch (error) {
       return res.status(error.status).json({

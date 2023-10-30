@@ -13,10 +13,8 @@ router.post("/login", bodyValidation(UserSchema.loginSchema), userController.log
 
 router.post("/logout", userController.logout);
 
-router.get("/refresh", userController.refresh);
-
 router.get("/users", authMiddleware, userController.getUsers);
 
-router.get("/current", userController.getCurrent);
+router.get("/current", authMiddleware, userController.getCurrent);
 
 module.exports = router;
