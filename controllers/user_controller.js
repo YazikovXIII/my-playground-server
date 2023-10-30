@@ -57,8 +57,8 @@ class UserController {
       const userData = await UserService.getCurrent(accessToken);
       return res.json(userData);
     } catch (error) {
-      return res.status(error.status).json({
-        message: error.message,
+      return res.status(error.status || 500).json({
+        message: error.message || "Internal Server Error",
       });
     }
   }
