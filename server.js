@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const { PORT, MONGO_DB_URL } = process.env;
 const userRouter = require("./router/user_route");
+const todoRouter = require("./router/todos_route");
 
 const app = express();
 
@@ -23,6 +24,7 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.use(express.json());
 app.use("/user", userRouter);
+app.use("/todo", todoRouter);
 app.use((err, req, res, next) => {
   const { status = 500, message = "server error" } = err;
   res.status(status).json({ message: message });
