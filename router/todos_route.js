@@ -6,7 +6,7 @@ const TodosController = require("../controllers/todos_controller");
 const TodoSchema = require("../schemas/todo_shemas");
 
 router.post("/add", authMiddleware, bodyValidation(TodoSchema.addSchema), TodosController.addTodo);
-// router.patch("/complete", authMiddleware);
+router.patch("/complete/:id", authMiddleware, TodosController.todoIsComplete);
 router.delete("/delete/:id", authMiddleware, TodosController.deleteTodo);
 router.get("/getTodos", authMiddleware, TodosController.getTodos);
 

@@ -43,6 +43,20 @@ class TodosController {
       });
     }
   }
+
+  async todoIsComplete(req, res, next) {
+    try {
+      const { id } = req.params;
+      const todoData = await TodoService.todoIsComplete(id);
+      return res.json(todoData);
+    } catch (error) {
+      console.log("MY toggleComplete ERROR", error);
+
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+  }
 }
 
 module.exports = new TodosController();

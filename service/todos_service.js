@@ -22,10 +22,15 @@ class TodoService {
     const accessToken = token.split(" ")[1];
     const tokenData = await TokenService.findToken(accessToken);
     const user = tokenData.user;
-    console.log(user);
 
     const todosData = await TodoModel.find({ user });
     return todosData;
+  }
+
+  async todoIsComplete(id) {
+    const toggledTodo = await TodoModel.findById(id);
+    const todoData = await TodoModel.findByIdAndUpdate(id, { isComplete: !toggledTodo.isComplete });
+    return todoData;
   }
 }
 
