@@ -41,7 +41,6 @@ class UserController {
   async logout(req, res, next) {
     try {
       const accessToken = req.headers.authorization;
-      console.log("access", accessToken);
       await UserService.logout(accessToken);
       return res.status(200).json({ message: "Logged Out" });
     } catch (error) {
