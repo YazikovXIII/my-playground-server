@@ -2,8 +2,6 @@ const CustomError = require("../helpers/customError");
 
 const bodyValidation = (schema) => {
   return (req, res, next) => {
-    console.log("body", req.body);
-    console.log("fields", req.fields);
     try {
       if (!req.body || Object.keys(req.body).length === 0) {
         throw CustomError(400, "Missing fields");

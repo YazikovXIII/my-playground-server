@@ -9,7 +9,7 @@ class PostController {
       const postData = await PostService.addPost(token, imgURL, header, text);
       return res.json(postData);
     } catch (error) {
-      return res.status(error.status).json({
+      return res.status((error.status = 500)).json({
         message: error.message,
       });
     }
