@@ -15,6 +15,19 @@ class PostService {
     const postData = await PostModel.find();
     return postData;
   }
+
+  async getUsersPosts(token) {
+    const accessToken = token.split(" ")[1];
+    const tokenData = await TokenService.findToken(accessToken);
+    const userID = tokenData.user._id;
+    const postData = await PostModel.find({ user: userID });
+    return postData;
+  }
+
+  async deleteUsersPost(id) {
+    const postData = await PostModel.findByIdAndDelete(id);
+    return postData;
+  }
 }
 
 module.exports = new PostService();

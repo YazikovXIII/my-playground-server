@@ -9,5 +9,7 @@ const PostController = require("../controllers/post_controller");
 // bodyValidation(PostSchema),
 router.post("/add", authMiddleware, upload.single("postThumb"), PostController.addpost);
 router.get("/getAll", authMiddleware, PostController.getAll);
+router.get("/getUsersPosts", authMiddleware, PostController.getUsersPosts);
+router.delete("/deleteUsersPost/:id", authMiddleware, PostController.deleteUsersPost);
 
 module.exports = router;

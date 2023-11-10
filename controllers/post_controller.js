@@ -25,6 +25,34 @@ class PostController {
       });
     }
   }
+  async getUsersPosts(req, res) {
+    try {
+      const token = req.headers.authorization;
+      const postData = await PostService.getUsersPosts(token);
+      const reversed = postData.reverse();
+      return res.json(reversed);
+    } catch (error) {
+      return res.status(error.status).json({
+        message: error.message,
+      });
+    }
+  }
+
+  async deleteUsersPost(req, res) {
+    try {
+      const { id } = req.params;
+      const postData = await PostService.deleteUsersPost(id);
+      console.log("remover data");
+
+      return res.json(postData);
+    } catch (error) {
+      console.log("error", error);
+      const statusCode = error.status || 500;
+      return res.status(statusCode).json({
+        message: error.message || "Внутрішня помилка сервера",
+      });
+    }
+  }
 }
 
 module.exports = new PostController();
