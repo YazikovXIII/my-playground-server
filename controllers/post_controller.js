@@ -42,11 +42,9 @@ class PostController {
     try {
       const { id } = req.params;
       const postData = await PostService.deleteUsersPost(id);
-      console.log("remover data");
 
       return res.json(postData);
     } catch (error) {
-      console.log("error", error);
       const statusCode = error.status || 500;
       return res.status(statusCode).json({
         message: error.message || "Внутрішня помилка сервера",
