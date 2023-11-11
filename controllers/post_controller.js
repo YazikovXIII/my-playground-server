@@ -17,8 +17,8 @@ class PostController {
   async getAll(req, res) {
     try {
       const postData = await PostService.getAll();
-      const reversedPostData = postData.reverse();
-      return res.json(reversedPostData);
+
+      return res.json(postData);
     } catch (error) {
       return res.status(error.status).json({
         message: error.message,
