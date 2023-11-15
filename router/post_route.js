@@ -11,5 +11,6 @@ router.post("/add", authMiddleware, upload.single("postThumb"), PostController.a
 router.get("/getAll", authMiddleware, PostController.getAll);
 router.get("/getUsersPosts", authMiddleware, PostController.getUsersPosts);
 router.delete("/deleteUsersPost/:id", authMiddleware, PostController.deleteUsersPost);
+router.put("/editPost/:id", authMiddleware, upload.single("postThumb"), PostController.editPost);
 
 module.exports = router;

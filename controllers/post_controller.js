@@ -14,6 +14,7 @@ class PostController {
       });
     }
   }
+
   async getAll(req, res) {
     try {
       const postData = await PostService.getAll();
@@ -37,17 +38,38 @@ class PostController {
       });
     }
   }
-
   async deleteUsersPost(req, res) {
     try {
       const { id } = req.params;
       const postData = await PostService.deleteUsersPost(id);
-
       return res.json(postData);
     } catch (error) {
       const statusCode = error.status || 500;
       return res.status(statusCode).json({
         message: error.message || "Внутрішня помилка сервера",
+      });
+    }
+  }
+
+  async editPost(req, res, next) {
+    console.log("edit");
+
+    try {
+      const { id } = req.params;
+      console.log("id", id);
+      console.log("req.body", req.body);
+
+      const { header, text } = req.body;
+      console.log("header", header);
+      const imgURL = req.file.path;
+
+      console.log("url", imgURL);
+
+      const postData = await PostService.editPost(id, header, text, imgURL);
+      return res.json(postData);
+    } catch (error) {
+      return res.status(error.status).json({
+        message: error.message,
       });
     }
   }
