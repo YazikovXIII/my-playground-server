@@ -1,13 +1,14 @@
 const CustomError = require("../helpers/customError");
 const PostModel = require("../models/post_model");
 const TokenService = require("./token_service");
+const UserModel = require("../models/user_model");
 
 class PostService {
   async addPost(token, imgURL, header, text) {
     const accessToken = token.split(" ")[1];
     const tokenData = await TokenService.findToken(accessToken);
-    const user = tokenData.user;
-    const postData = await PostModel.create({ user, imgURL, header, text });
+    const user = await UserModel.findById(tokenData.user);
+    const postData = await PostModel.create({ user: user._id, owner: user.username, imgURL, header, text });
     return postData;
   }
 

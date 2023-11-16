@@ -6,6 +6,9 @@ const PostSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "User",
     },
+    owner: {
+      type: String,
+    },
     imgURL: {
       type: String,
     },
