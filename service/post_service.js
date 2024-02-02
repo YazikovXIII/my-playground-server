@@ -31,11 +31,8 @@ class PostService {
   }
 
   async editPost(id, header, text, imgURL) {
-    console.log("edit.2");
-
     const update = { header, text, imgURL };
     const options = { new: true };
-
     const updatedPost = await PostModel.findOneAndUpdate({ _id: id }, update, options);
     return updatedPost;
   }

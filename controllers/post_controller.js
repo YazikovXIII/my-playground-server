@@ -18,7 +18,6 @@ class PostController {
   async getAll(req, res) {
     try {
       const postData = await PostService.getAll();
-
       return res.json(postData);
     } catch (error) {
       return res.status(error.status).json({
@@ -56,15 +55,8 @@ class PostController {
 
     try {
       const { id } = req.params;
-      console.log("id", id);
-      console.log("req.body", req.body);
-
       const { header, text } = req.body;
-      console.log("header", header);
       const imgURL = req.file.path;
-
-      console.log("url", imgURL);
-
       const postData = await PostService.editPost(id, header, text, imgURL);
       return res.json(postData);
     } catch (error) {
